@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>ELFUT | ELITE CONTROLLER (HYBRID)</title>
+    <style>
+        :root {
+            --ps-blue: #0072ce;
+            --ps-neon: #00f2ff;
+            --bg: #050505;
+            --case: #ffffff;
+        }
+
+        body {
+            background: radial-gradient(circle, #1a1b20 0%, #050506 100%);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Navigasyon Paneli */
+        .nav {
+            position: absolute; top: 0; width: 100%;
+            padding: 25px 60px; display: flex;
+            justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .btn-group { display: flex; gap: 15px; }
+
+        .connect-btn {
+            background: var(--ps-blue);
+            color: white; border: none; padding: 12px 25px;
+            border-radius: 50px; font-weight: 900; cursor: pointer;
+            transition: 0.3s; text-transform: uppercase;
+        }
+
+        .bt-btn { background: #2c3e50; }
+        .active-conn { background: #2ecc71 !important; box-shadow: 0 0 20px #2ecc71; }
+
+        /* Kontrolcü Tasarımı */
+        .controller-body {
+            width: 900px; height: 580px;
+            background: var(--case);
+            border-radius: 100px 100px 180px 180px;
+            position: relative;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.8), inset 0 -15px 40px rgba(0,0,0,0.1);
+            display: flex; justify-content: space-between;
+            padding: 80px; box-sizing: border-box;
+        }
+
+        .lightbar {
+            position: absolute; top: 10px; left: 50%;
+            transform: translateX(-50%); width: 360px; height: 215px;
+            border-left: 5px solid var(--ps-blue);
+            border-right: 5px solid var(--ps-blue);
+            border-radius: 0 0 60px 60px;
+            filter: drop-shadow(0 0 12px var(--ps-blue));
+            z-index: 4;
+        }
+
+        .touchpad {
+            position: absolute; top: 0; left: 50%;
+            transform: translateX(-50%); width: 340px; height: 200px;
+            background: #ededef; border-radius: 0 0 50px 50px;
+            border: 1px solid #d1d1d4; z-index: 5;
+        }
+
+        /* Analoglar ve Butonlar */
+        .stick {
+            width: 85px; height: 85px; background: radial-gradient(circle, #333, #000);
+            border-radius: 50%; position: absolute; top: 22.5px; left: 22.5px;
+            cursor: grab; transition: transform 0.05s linear;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: 2px solid #444;
+        }
+
+        .btn {
+            width: 70px; height: 70px; background: #f0f0f2;
+            border-radius: 50%; display: flex; justify-content: center;
+            align-items: center; font-size: 1.8em; color: #333;
+            box-shadow: 0 8px 0 #ccc, 0 12px 20px rgba(0,0,0,0.1);
+            position: absolute; transition: 0.1s; border: none; cursor: pointer;
+        }
+
+        .btn.active { transform: translateY(6px); box-shadow: 0 2px 0 #aaa; background: var(--ps-blue); color: white; }
+
+        #keyW { top: 0; left: 50%; transform: translateX(-50%); }
+        #keyA { left: 0; top: 50%; transform: translateY(-50%); }
+        #keyS { bottom: 0; left: 50%; transform: translateX(-50%); }
+        #keyD { right: 0; top: 50%; transform: translateY(-50%); }
+
+        .f-btn {
+            position: absolute; bottom: 200px; left: 50%;
+            transform: translateX(-50%); width: 75px; height: 45px;
+            background: #e74c3c; border-radius: 20px;
+            color: white; font-weight: 900; border: none; cursor: pointer; z-index: 10;
+        }
+
+        .analog-zone {
+            position: absolute; bottom: 70px; left: 0;
+            width: 100%; display: flex; justify-content: center; gap: 100px;
+        }
+
+        .analog-base { width: 130px; height: 130px; background: #111; border-radius: 50%; position: relative; }
+
+        .footer { position: absolute; bottom: 30px; font-size: 3em; font-weight: 900; color: rgba(255,255,255,0.03); letter-spacing: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="nav">
+    <div style="font-weight: 900; font-size: 1.2em; letter-spacing: 2px;">ELFUT OPERATIONAL TERMINAL</div>
+    <div class="btn-group">
+        <button class="connect-btn" id="usbBtn">USB KABLO 🔌</button>
+        <button class="connect-btn bt-btn" id="btBtn">BLUETOOTH 📡</button>
+    </div>
+</div>
+
+<div class="controller-body">
+    <div class="lightbar"></div>
+    <div class="touchpad"></div>
+    
+    <div style="position: relative; width: 220px; height: 220px; margin-top: 100px;">
+        <button class="btn" id="keyW">↑</button>
+        <button class="btn" id="keyA">←</button>
+        <button class="btn" id="keyS">↓</button>
+        <button class="btn" id="keyD">→</button>
+    </div>
+
+    <button class="f-btn" id="keyF">STOP</button>
+
+    <div style="position: relative; width: 220px; height: 220px; margin-top: 100px;">
+        <button class="btn" style="top:0; left:50%; transform:translateX(-50%); color:#2ecc71">▲</button>
+        <button class="btn" style="left:0; top:50%; transform:translateY(-50%); color:#9b59b6">■</button>
+        <button class="btn" style="bottom:0; left:50%; transform:translateX(-50%); color:#0072ce">✖</button>
+        <button class="btn" style="right:0; top:50%; transform:translateY(-50%); color:#e74c3c">●</button>
+    </div>
+
+    <div class="analog-zone">
+        <div class="analog-base"><div class="stick" id="stickLeft"></div></div>
+        <div class="analog-base"><div class="stick" id="stickRight"></div></div>
+    </div>
+</div>
+
+<div class="footer">ELFUT</div>
+
+<script>
+    let port, writer, bluetoothDevice, gattServer, characteristic;
+
+    // --- USB BAĞLANTI ---
+    document.getElementById('usbBtn').addEventListener('click', async () => {
+        try {
+            port = await navigator.serial.requestPort();
+            await port.open({ baudRate: 115200 });
+            writer = port.writable.getWriter();
+            document.getElementById('usbBtn').classList.add('active-conn');
+            document.getElementById('usbBtn').innerText = "USB BAĞLI";
+        } catch (e) { console.log("USB Hatası"); }
+    });
+
+    // --- BLUETOOTH BAĞLANTI (HC-05) ---
+    document.getElementById('btBtn').addEventListener('click', async () => {
+        try {
+            bluetoothDevice = await navigator.bluetooth.requestDevice({
+                acceptAllDevices: true,
+                optionalServices: ['00001101-0000-1000-8000-00805f9b34fb'] // Seri port servisi
+            });
+            document.getElementById('btBtn').innerText = "BAĞLANIYOR...";
+            // Not: Web Bluetooth API ile HC-05 eşleşmesi tarayıcı kısıtlamalarına takılabilir.
+            // Bu buton Bluetooth eşleşme ekranını tetikler.
+            document.getElementById('btBtn').classList.add('active-conn');
+            document.getElementById('btBtn').innerText = "BT HAZIR";
+        } catch (e) { alert("Bluetooth hatası! Cihaz desteğini kontrol et."); }
+    });
+
+    async function send(msg) {
+        if (writer) {
+            const data = new TextEncoder().encode(msg + "\n");
+            await writer.write(data);
+        }
+    }
+
+    // --- ANALOG KONTROL ---
+    function setupStick(id) {
+        const stick = document.getElementById(id);
+        const base = stick.parentElement;
+        let active = false;
+        
+        const move = (e) => {
+            if (!active) return;
+            const rect = base.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            let x = (e.clientX || (e.touches ? e.touches[0].clientX : 0)) - centerX;
+            let y = (e.clientY || (e.touches ? e.touches[0].clientY : 0)) - centerY;
+            const dist = Math.sqrt(x*x + y*y);
+            const max = 40;
+            if (dist > max) { x *= max/dist; y *= max/dist; }
+            stick.style.transform = `translate(${x}px, ${y}px)`;
+            if(id === 'stickLeft') send(`${Math.round(-y*6)},${Math.round(-y*6)}`);
+        };
+
+        const stop = () => { active = false; stick.style.transform = `translate(0,0)`; send("f"); };
+        stick.addEventListener('mousedown', () => active = true);
+        window.addEventListener('mousemove', move);
+        window.addEventListener('mouseup', stop);
+    }
+
+    setupStick('stickLeft');
+    setupStick('stickRight');
+
+    // --- KLAVYE ---
+    const keys = { w:'keyW', a:'keyA', s:'keyS', d:'keyD', f:'keyF' };
+    window.addEventListener('keydown', (e) => {
+        const id = keys[e.key.toLowerCase()];
+        if(id) { document.getElementById(id).classList.add('active'); send(e.key.toLowerCase()); }
+    });
+    window.addEventListener('keyup', (e) => {
+        const id = keys[e.key.toLowerCase()];
+        if(id) document.getElementById(id).classList.remove('active');
+    });
+</script>
+</body>
+</html>
